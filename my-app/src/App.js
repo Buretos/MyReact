@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+	useRequestAddVacuumCleaner,
+	useRequestUpdateSmartphone,
+	useRequestDeleteHairDryer,
+	useRequestGetProducts,
+} from './hooks';
+import styles from './app.module.css';
 
 export const App = () => {
+	const { isLoading, products } = useRequestGetProducts();
+
+	const { isCreating, requestAddVacuumCleaner } = useRequestAddVacuumCleaner();
+	const { isUpdating, requestUpdateSmartphone } = useRequestUpdateSmartphone();
+	const { isDeleting, requestDeleteHairDryer } = useRequestDeleteHairDryer();
+
 	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
-			</header>
+		<div className={styles.app}>
+			{isLoading ? (
+				<div className={styles.loader}></div>
+			) : (
+				Object.entries(products).map(([id, { name, price }]) => (
+					<div key={id}>
+						{name} - {price} руб.
+					</div>
+				))
+			)}
+			<button disabled={isCreating} onClick={requestAddVacuumCleaner}>
+				Добавить пылесос
+			</button>
+			<button disabled={isUpdating} onClick={requestUpdateSmartphone}>
+				Обновить смартфон
+			</button>
+			<button disabled={isDeleting} onClick={requestDeleteHairDryer}>
+				Удалить фен
+			</button>
 		</div>
 	);
 };
