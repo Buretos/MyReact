@@ -1,49 +1,48 @@
-import React, { useState } from 'react';
-//components
-import { ToDo, ToDoForm } from './components';
+import { useState } from 'react';
+import {
+	useRequestAddVacuumCleaner,
+	useRequestUpdateSmartphone,
+	useRequestDeleteHairDryer,
+	useRequestGetProducts,
+} from './hooks';
+import styles from './app.module.css';
 
 export const App = () => {
-	const [todos, setTodos] = useState([]);
+	const [refreshProductsFlag, setRefreshProductsFlag] = useState(false);
+	const refreshProducts = () => setRefreshProductsFlag(!refreshProductsFlag);
 
-	const addTask = (userInput) => {
-		if (userInput) {
-			const newItem = {
-				id: Math.random().toString(36).substr(2, 9),
-				task: userInput,
-				complete: false,
-			};
-			setTodos([...todos, newItem]);
-		}
-	};
+	const { isLoading, products } = useRequestGetProducts(refreshProductsFlag);
 
-	const removeTask = (id) => {
-		setTodos([...todos.filter((todo) => todo.id !== id)]);
-	};
-
-	const handleToggle = (id) => {
-		setTodos([
-			...todos.map((task) =>
-				task.id === id ? { ...task, complete: !task.complete } : { ...task },
-			),
-		]);
-	};
+	const { isCreating, requestAddVacuumCleaner } =
+		useRequestAddVacuumCleaner(refreshProducts);
+	const { isUpdating, requestUpdateSmartphone } =
+		useRequestUpdateSmartphone(refreshProducts);
+	const { isDeleting, requestDeleteHairDryer } =
+		useRequestDeleteHairDryer(refreshProducts);
 
 	return (
-		<div className="App">
+		<div className={styles.app}>
 			<header>
-				<h1>Список задач: {todos.length}</h1>
+				<h1>Список дел с Placeholder</h1>
 			</header>
-			<ToDoForm addTask={addTask} />
-			{todos.map((todo) => {
-				return (
-					<ToDo
-						todo={todo}
-						key={todo.id}
-						toggleTask={handleToggle}
-						removeTask={removeTask}
-					/>
-				);
-			})}
+			{isLoading ? (
+				<div className={styles.loader}></div>
+			) : (
+				products.map(({ id, title }) => (
+					<div key={id} className={styles.itemTodo}>
+						{title}
+					</div>
+				))
+			)}
+			<button disabled={isCreating} onClick={requestAddVacuumCleaner}>
+				Добавить пылесос
+			</button>
+			<button disabled={isUpdating} onClick={requestUpdateSmartphone}>
+				Обновить смартфон
+			</button>
+			<button disabled={isDeleting} onClick={requestDeleteHairDryer}>
+				Удалить фен
+			</button>
 		</div>
 	);
 };
