@@ -23,7 +23,7 @@ export const App = () => {
 	return (
 		<div className={styles.app}>
 			<header>
-				<h1>Список дел с Placeholder</h1>
+				<h1>Список дел с JSON Server</h1>
 			</header>
 			{isLoading ? (
 				<div className={styles.loader}></div>
