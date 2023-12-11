@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const useRequestGetProducts = (refreshProductsFlag) => {
+export const useRequestGetProducts = () => {
 	const [products, setProducts] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -13,7 +13,7 @@ export const useRequestGetProducts = (refreshProductsFlag) => {
 				setProducts(loadedProducts);
 			})
 			.finally(() => setIsLoading(false));
-	}, [refreshProductsFlag]);
+	}, []);
 
 	return {
 		isLoading,

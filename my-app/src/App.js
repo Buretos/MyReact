@@ -1,28 +1,12 @@
-import { useState } from 'react';
-import {
-	useRequestAddVacuumCleaner,
-	useRequestUpdateSmartphone,
-	useRequestDeleteHairDryer,
-	useRequestGetProducts,
-} from './hooks';
+import { useRequestGetProducts } from './hooks';
 import styles from './app.module.css';
 
 export const App = () => {
-	const [refreshProductsFlag, setRefreshProductsFlag] = useState(false);
-	const refreshProducts = () => setRefreshProductsFlag(!refreshProductsFlag);
-
-	const { isLoading, products } = useRequestGetProducts(refreshProductsFlag);
-
-	const { isCreating, requestAddVacuumCleaner } =
-		useRequestAddVacuumCleaner(refreshProducts);
-	const { isUpdating, requestUpdateSmartphone } =
-		useRequestUpdateSmartphone(refreshProducts);
-	const { isDeleting, requestDeleteHairDryer } =
-		useRequestDeleteHairDryer(refreshProducts);
+	const { isLoading, products } = useRequestGetProducts();
 
 	return (
 		<div className={styles.app}>
-			<header>
+			<header className={styles.header}>
 				<h1>Список дел с Placeholder</h1>
 			</header>
 			{isLoading ? (
@@ -34,15 +18,6 @@ export const App = () => {
 					</div>
 				))
 			)}
-			<button disabled={isCreating} onClick={requestAddVacuumCleaner}>
-				Добавить пылесос
-			</button>
-			<button disabled={isUpdating} onClick={requestUpdateSmartphone}>
-				Обновить смартфон
-			</button>
-			<button disabled={isDeleting} onClick={requestDeleteHairDryer}>
-				Удалить фен
-			</button>
 		</div>
 	);
 };
