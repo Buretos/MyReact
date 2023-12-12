@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-export const useRequestDeleteHairDryer = (refreshProducts) => {
+export const useRequestDeleteHairDryer = (refreshProducts, idTodo) => {
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const requestDeleteHairDryer = () => {
 		setIsDeleting(true);
 
-		fetch('http://localhost:3005/produckts/003', {
+		fetch(`http://localhost:3005/todos/${idTodo}`, {
 			method: 'DELETE',
 		})
 			.then((rawResponse) => rawResponse.json())

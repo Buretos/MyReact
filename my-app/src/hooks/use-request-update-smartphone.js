@@ -1,25 +1,26 @@
 import { useState } from 'react';
 
-export const useRequestUpdateSmartphone = (refreshProducts) => {
+export const useRequestUpdateSmartphone = (refreshTodos, idTodo, toggle) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	const requestUpdateSmartphone = () => {
 		setIsUpdating(true);
 
-		fetch('http://localhost:3005/produckts/002', {
-			method: 'PUT',
+		fetch(`http://localhost:3005/todos/${idTodo}`, {
+			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json;charset=utf-8' },
 			body: JSON.stringify({
-				name: 'Сматрфон',
-				price: 17900,
+				completed: toggle,
 			}),
 		})
 			.then((rawResponse) => rawResponse.json())
 			.then((response) => {
-				console.log('Смартфон обновлён, ответ сервера:', response);
-				refreshProducts();
+				console.log(' ответ сервера:', response);
+				refreshTodos();
 			})
-			.finally(() => setIsUpdating(false));
+			.finally(() => {
+				setIsUpdating(false);
+			});
 	};
 
 	return {

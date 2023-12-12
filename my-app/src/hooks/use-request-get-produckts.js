@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
 
-export const useRequestGetProducts = (refreshProductsFlag) => {
-	const [products, setProducts] = useState([]);
+export const useRequestGetProducts = (refreshTodosFlag) => {
+	const [todos, setTodos] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		setIsLoading(true);
 
-		fetch('https://jsonplaceholder.typicode.com/todos')
+		fetch(' http://localhost:3005/todos')
 			.then((loadedData) => loadedData.json())
 			.then((loadedProducts) => {
-				setProducts(loadedProducts);
+				setTodos(loadedProducts);
 			})
 			.finally(() => setIsLoading(false));
-	}, [refreshProductsFlag]);
+	}, [refreshTodosFlag]);
 
 	return {
 		isLoading,
-		products,
+		todos,
 	};
 };

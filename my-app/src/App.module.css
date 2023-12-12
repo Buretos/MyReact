@@ -19,7 +19,7 @@
 	cursor: pointer;
   }
 
-  .item-text {
+  .itemText {
 	display: inline-block;
 	cursor: pointer;
   }
@@ -47,7 +47,7 @@
 	text-transform: capitalize;
   }
 
-  .item-delete {
+  .itemDelete {
 	display: inline-block;
 	cursor: pointer;
 	float: right;
@@ -57,9 +57,12 @@
 	bottom: 5px;
   }
 
-  .strike {
+  .itemTextStrike {
+	display: inline-block;
+	cursor: pointer;
 	text-decoration: line-through;
   }
+
 
   .loader {
 	position: fixed;
