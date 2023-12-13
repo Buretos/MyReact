@@ -14,6 +14,7 @@ export const App = () => {
 	const [userInput, setUserInput] = useState('');
 	const [idTodo, setIdTodo] = useState(null);
 	const [toggle, setToggle] = useState(false);
+	const [toggleItem, setToggleItem] = useState(false);
 
 	const { isLoading, todos } = useRequestGetProducts(refreshTodosFlag, userInput);
 
@@ -24,7 +25,7 @@ export const App = () => {
 	const { isUpdating, requestUpdateSmartphone } = useRequestUpdateSmartphone(
 		refreshTodos,
 		idTodo,
-		toggle,
+		toggleItem,
 	);
 	const { isDeleting, requestDeleteHairDryer } = useRequestDeleteHairDryer(
 		refreshTodos,
@@ -84,6 +85,8 @@ export const App = () => {
 							onClick={() => {
 								setIdTodo(id);
 								setToggle(!toggle);
+								setToggleItem(!completed);
+								// setToggleItem(!completed);
 							}}
 						>
 							{title}

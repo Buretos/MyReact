@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export const useRequestUpdateSmartphone = (refreshTodos, idTodo, toggle) => {
+export const useRequestUpdateSmartphone = (refreshTodos, idTodo, toggleItem) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	const requestUpdateSmartphone = () => {
@@ -10,7 +10,7 @@ export const useRequestUpdateSmartphone = (refreshTodos, idTodo, toggle) => {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json;charset=utf-8' },
 			body: JSON.stringify({
-				completed: toggle,
+				completed: toggleItem,
 			}),
 		})
 			.then((rawResponse) => rawResponse.json())
