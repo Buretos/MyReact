@@ -8,6 +8,10 @@ import {
 import styles from './app.module.css';
 
 export const App = () => {
+	const [newTodos, setNewTodos] = useState([]);
+	const [sortAsc, setSortAsc] = useState(false); // Состояние для отслеживания направления сортировки
+	const [itemButtonSort, setItemButtonSort] = useState('Сортировать');
+
 	const [refreshTodosFlag, setRefreshTodosFlag] = useState(false);
 	const refreshTodos = () => setRefreshTodosFlag(!refreshTodosFlag);
 
@@ -15,12 +19,34 @@ export const App = () => {
 	const [idTodo, setIdTodo] = useState(null);
 	const [toggle, setToggle] = useState(false);
 	const [toggleItem, setToggleItem] = useState(false);
+	const [isDelete, setIsDelete] = useState(false);
 
 	const { isLoading, todos } = useRequestGetTodos(refreshTodosFlag, userInput);
 
 	const requestAddTodo = useRequestAddTodo(refreshTodos, userInput);
 	const requestUpdateTodo = useRequestUpdateTodo(refreshTodos, idTodo, toggleItem);
 	const requestDeleteTodo = useRequestDeleteTodo(refreshTodos, idTodo);
+
+	const handleSortClick = () => {
+		setSortAsc(!sortAsc);
+		sortAsc
+			? setItemButtonSort('Сортировать')
+			: setItemButtonSort('Отмена сортировки');
+	};
+
+	useEffect(() => {
+		// Локальная функция для сортировки
+		const sortedTodos = [...todos].sort((a, b) => {
+			const titleA = a.title.toUpperCase(); // Настройка сортировки по заглавным буквам
+			const titleB = b.title.toUpperCase();
+			if (sortAsc) {
+				return titleA.localeCompare(titleB);
+			} else {
+				return [...todos];
+			}
+		});
+		setNewTodos(sortedTodos); // setTodos(sortedTodos); // Обновление состояния с отсортированным списком
+	}, [sortAsc, isLoading]); // Дополнительная зависимость от todos
 
 	const handleChange = (e) => {
 		setUserInput(e.currentTarget.value);
@@ -43,11 +69,20 @@ export const App = () => {
 		requestUpdateTodo();
 	}, [toggle]);
 
+	useEffect(() => {
+		requestDeleteTodo();
+	}, [isDelete]);
+
 	return (
 		<div className={styles.app}>
 			<header className={styles.header}>
 				<h1>Список дел с JSON Server</h1>
 			</header>
+			<div>
+				<button className={styles.buttonSort} onClick={handleSortClick}>
+					{itemButtonSort}
+				</button>
+			</div>
 			<form onSubmit={handleSubmit}>
 				<input
 					className={styles.input}
@@ -62,7 +97,7 @@ export const App = () => {
 			{isLoading ? (
 				<div className={styles.loader}></div>
 			) : (
-				todos.map(({ id, title, completed }) => (
+				newTodos.map(({ id, title, completed }) => (
 					<div className={completed ? styles.itemTodoStrike : styles.itemTodo}>
 						<div
 							key={id}
@@ -81,7 +116,7 @@ export const App = () => {
 							className={styles.itemDelete}
 							onClick={() => {
 								setIdTodo(id);
-								requestDeleteTodo();
+								setIsDelete(!isDelete);
 							}}
 						>
 							x
