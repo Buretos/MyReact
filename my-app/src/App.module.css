@@ -2,6 +2,9 @@
 	text-align: center;
   }
 
+  .header {
+	color: rgb(16, 16, 156);
+  }
   .itemTodo {
 	padding: 14px;
 	width: 250px;
@@ -13,6 +16,23 @@
 	  rgba(93, 12, 255, 1) 0%,
 	  rgba(155, 0, 250, 1) 100%
 	);
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+  }
+
+  .itemTodoStrike {
+	padding: 14px;
+	width: 250px;
+	margin: 0 auto;
+	text-align: left;
+	margin-top: 15px;
+	background: linear-gradient(
+	  90deg,
+	  rgb(88, 88, 88) 0%,
+	  rgb(137, 136, 137) 100%
+	  );
 	color: #fff;
 	border: none;
 	border-radius: 5px;
@@ -61,6 +81,7 @@
 	display: inline-block;
 	cursor: pointer;
 	text-decoration: line-through;
+
   }
 
 

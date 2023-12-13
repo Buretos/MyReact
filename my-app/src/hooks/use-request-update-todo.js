@@ -1,11 +1,5 @@
-import { useState } from 'react';
-
-export const useRequestUpdateSmartphone = (refreshTodos, idTodo, toggleItem) => {
-	const [isUpdating, setIsUpdating] = useState(false);
-
-	const requestUpdateSmartphone = () => {
-		setIsUpdating(true);
-
+export const useRequestUpdateTodo = (refreshTodos, idTodo, toggleItem) => {
+	const requestUpdateTodo = () => {
 		fetch(`http://localhost:3005/todos/${idTodo}`, {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json;charset=utf-8' },
@@ -17,14 +11,8 @@ export const useRequestUpdateSmartphone = (refreshTodos, idTodo, toggleItem) => 
 			.then((response) => {
 				console.log(' ответ сервера:', response);
 				refreshTodos();
-			})
-			.finally(() => {
-				setIsUpdating(false);
 			});
 	};
 
-	return {
-		isUpdating,
-		requestUpdateSmartphone,
-	};
+	return requestUpdateTodo;
 };

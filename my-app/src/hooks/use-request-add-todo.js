@@ -1,10 +1,5 @@
-import { useState } from 'react';
-
-export const useRequestAddVacuumCleaner = (refreshProducts, userInput) => {
-	const [isCreating, setIsCreating] = useState(false);
-
-	const requestAddVacuumCleaner = () => {
-		setIsCreating(true);
+export const useRequestAddTodo = (refreshTodos, userInput) => {
+	const requestAddTodo = () => {
 		console.log(userInput);
 		fetch('http://localhost:3005/todos', {
 			method: 'POST',
@@ -18,13 +13,9 @@ export const useRequestAddVacuumCleaner = (refreshProducts, userInput) => {
 			.then((rawResponse) => rawResponse.json())
 			.then((response) => {
 				console.log('Пылесос добавлен, ответ сервера:', response);
-				refreshProducts();
-			})
-			.finally(() => setIsCreating(false));
+				refreshTodos();
+			});
 	};
 
-	return {
-		isCreating,
-		requestAddVacuumCleaner,
-	};
+	return requestAddTodo;
 };

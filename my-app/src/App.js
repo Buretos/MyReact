@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import {
-	useRequestAddVacuumCleaner,
-	useRequestUpdateSmartphone,
-	useRequestDeleteHairDryer,
-	useRequestGetProducts,
+	useRequestAddTodo,
+	useRequestUpdateTodo,
+	useRequestDeleteTodo,
+	useRequestGetTodos,
 } from './hooks';
 import styles from './app.module.css';
 
@@ -16,21 +16,11 @@ export const App = () => {
 	const [toggle, setToggle] = useState(false);
 	const [toggleItem, setToggleItem] = useState(false);
 
-	const { isLoading, todos } = useRequestGetProducts(refreshTodosFlag, userInput);
+	const { isLoading, todos } = useRequestGetTodos(refreshTodosFlag, userInput);
 
-	const { isCreating, requestAddVacuumCleaner } = useRequestAddVacuumCleaner(
-		refreshTodos,
-		userInput,
-	);
-	const { isUpdating, requestUpdateSmartphone } = useRequestUpdateSmartphone(
-		refreshTodos,
-		idTodo,
-		toggleItem,
-	);
-	const { isDeleting, requestDeleteHairDryer } = useRequestDeleteHairDryer(
-		refreshTodos,
-		idTodo,
-	);
+	const requestAddTodo = useRequestAddTodo(refreshTodos, userInput);
+	const requestUpdateTodo = useRequestUpdateTodo(refreshTodos, idTodo, toggleItem);
+	const requestDeleteTodo = useRequestDeleteTodo(refreshTodos, idTodo);
 
 	const handleChange = (e) => {
 		setUserInput(e.currentTarget.value);
@@ -39,7 +29,7 @@ export const App = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		setUserInput(userInput);
-		requestAddVacuumCleaner();
+		requestAddTodo();
 		setUserInput('');
 	};
 
@@ -50,12 +40,12 @@ export const App = () => {
 	};
 
 	useEffect(() => {
-		requestUpdateSmartphone();
+		requestUpdateTodo();
 	}, [toggle]);
 
 	return (
 		<div className={styles.app}>
-			<header>
+			<header className={styles.header}>
 				<h1>Список дел с JSON Server</h1>
 			</header>
 			<form onSubmit={handleSubmit}>
@@ -73,20 +63,16 @@ export const App = () => {
 				<div className={styles.loader}></div>
 			) : (
 				todos.map(({ id, title, completed }) => (
-					<div className={styles.itemTodo}>
+					<div className={completed ? styles.itemTodoStrike : styles.itemTodo}>
 						<div
 							key={id}
 							className={
 								completed ? styles.itemTextStrike : styles.itemText
 							}
-							// onMouseOver={() => {
-							// 	setToggle(completed);
-							// }}
 							onClick={() => {
 								setIdTodo(id);
 								setToggle(!toggle);
 								setToggleItem(!completed);
-								// setToggleItem(!completed);
 							}}
 						>
 							{title}
@@ -95,7 +81,7 @@ export const App = () => {
 							className={styles.itemDelete}
 							onClick={() => {
 								setIdTodo(id);
-								requestDeleteHairDryer();
+								requestDeleteTodo();
 							}}
 						>
 							x
@@ -103,15 +89,6 @@ export const App = () => {
 					</div>
 				))
 			)}
-			<button disabled={isCreating} onClick={requestAddVacuumCleaner}>
-				Добавить пылесос
-			</button>
-			<button disabled={isUpdating} onClick={requestUpdateSmartphone}>
-				Обновить смартфон
-			</button>
-			<button disabled={isDeleting} onClick={requestDeleteHairDryer}>
-				Удалить фен
-			</button>
 		</div>
 	);
 };

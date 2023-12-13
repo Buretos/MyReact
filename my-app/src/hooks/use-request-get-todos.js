@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const useRequestGetProducts = (refreshTodosFlag) => {
+export const useRequestGetTodos = (refreshTodosFlag) => {
 	const [todos, setTodos] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -9,8 +9,8 @@ export const useRequestGetProducts = (refreshTodosFlag) => {
 
 		fetch(' http://localhost:3005/todos')
 			.then((loadedData) => loadedData.json())
-			.then((loadedProducts) => {
-				setTodos(loadedProducts);
+			.then((loadedTodos) => {
+				setTodos(loadedTodos);
 			})
 			.finally(() => setIsLoading(false));
 	}, [refreshTodosFlag]);
