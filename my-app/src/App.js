@@ -11,6 +11,8 @@ export const App = () => {
 	const [newTodos, setNewTodos] = useState([]);
 	const [sortAsc, setSortAsc] = useState(false); // Состояние для отслеживания направления сортировки
 	const [itemButtonSort, setItemButtonSort] = useState('Сортировать');
+	const [userFindInput, setUserFindInput] = useState('');
+	const [userFind, setUserFind] = useState(false);
 
 	const [refreshTodosFlag, setRefreshTodosFlag] = useState(false);
 	const refreshTodos = () => setRefreshTodosFlag(!refreshTodosFlag);
@@ -54,9 +56,11 @@ export const App = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		setUserInput(userInput);
-		requestAddTodo();
-		setUserInput('');
+		if (userInput) {
+			setUserInput(userInput);
+			requestAddTodo();
+			setUserInput('');
+		}
 	};
 
 	const handleKeyPress = (e) => {
@@ -73,11 +77,48 @@ export const App = () => {
 		requestDeleteTodo();
 	}, [isDelete]);
 
+	useEffect(() => {
+		const filtered = newTodos.filter((todo) =>
+			todo.title.toLowerCase().includes(userFindInput.toLowerCase()),
+		);
+		setNewTodos(filtered);
+		setUserFindInput('');
+	}, [userFind]);
+
+	const handleFindChange = (e) => {
+		setUserFindInput(e.currentTarget.value);
+	};
+
+	const handleFindSubmit = (e) => {
+		e.preventDefault();
+		if (userFindInput) {
+			setUserFindInput(userFindInput);
+			setUserFind(!userFind);
+		} else refreshTodos();
+	};
+
+	const handleFindKeyPress = (e) => {
+		if (e.key === 'Enter') {
+			handleFindSubmit(e);
+		}
+	};
+
 	return (
 		<div className={styles.app}>
 			<header className={styles.header}>
 				<h1>Список дел с JSON Server</h1>
 			</header>
+			<form onSubmit={handleFindSubmit}>
+				<input
+					className={styles.input}
+					value={userFindInput}
+					type="text"
+					onChange={handleFindChange}
+					onKeyDown={handleFindKeyPress}
+					placeholder="Введите для поиска..."
+				/>
+				<button className={styles.button}>Поиск</button>
+			</form>
 			<div>
 				<button className={styles.buttonSort} onClick={handleSortClick}>
 					{itemButtonSort}
