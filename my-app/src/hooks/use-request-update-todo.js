@@ -1,17 +1,14 @@
-export const useRequestUpdateTodo = (refreshTodos, idTodo, toggleItem) => {
+import { ref, update } from 'firebase/database';
+import { db } from '../firebase';
+
+export const useRequestUpdateTodo = (idTodo, toggleItem) => {
 	const requestUpdateTodo = () => {
-		fetch(`http://localhost:3005/todos/${idTodo}`, {
-			method: 'PATCH',
-			headers: { 'Content-Type': 'application/json;charset=utf-8' },
-			body: JSON.stringify({
-				completed: toggleItem,
-			}),
-		})
-			.then((rawResponse) => rawResponse.json())
-			.then((response) => {
-				console.log(' ответ сервера:', response);
-				refreshTodos();
-			});
+		const updateDbRef = ref(db, `todos/${idTodo}`);
+		update(updateDbRef, {
+			completed: toggleItem,
+		}).then((response) => {
+			console.log(' ответ сервера:', response);
+		});
 	};
 
 	return requestUpdateTodo;

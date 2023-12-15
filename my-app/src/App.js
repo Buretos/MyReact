@@ -13,9 +13,7 @@ export const App = () => {
 	const [itemButtonSort, setItemButtonSort] = useState('Сортировать');
 	const [userFindInput, setUserFindInput] = useState('');
 	const [userFind, setUserFind] = useState(false);
-
-	const [refreshTodosFlag, setRefreshTodosFlag] = useState(false);
-	const refreshTodos = () => setRefreshTodosFlag(!refreshTodosFlag);
+	const [refreshTodos, setRefreshTodos] = useState(false);
 
 	const [userInput, setUserInput] = useState('');
 	const [idTodo, setIdTodo] = useState(null);
@@ -23,11 +21,11 @@ export const App = () => {
 	const [toggleItem, setToggleItem] = useState(false);
 	const [isDelete, setIsDelete] = useState(false);
 
-	const { isLoading, todos } = useRequestGetTodos(refreshTodosFlag, userInput);
+	const { isLoading, todos } = useRequestGetTodos(refreshTodos);
 
-	const requestAddTodo = useRequestAddTodo(refreshTodos, userInput);
-	const requestUpdateTodo = useRequestUpdateTodo(refreshTodos, idTodo, toggleItem);
-	const requestDeleteTodo = useRequestDeleteTodo(refreshTodos, idTodo);
+	const requestAddTodo = useRequestAddTodo(userInput);
+	const requestUpdateTodo = useRequestUpdateTodo(idTodo, toggleItem);
+	const requestDeleteTodo = useRequestDeleteTodo(idTodo);
 
 	const handleSortClick = () => {
 		setSortAsc(!sortAsc);
@@ -37,18 +35,18 @@ export const App = () => {
 	};
 
 	useEffect(() => {
-		// Локальная функция для сортировки
-		const sortedTodos = [...todos].sort((a, b) => {
-			const titleA = a.title.toUpperCase(); // Настройка сортировки по заглавным буквам
-			const titleB = b.title.toUpperCase();
-			if (sortAsc) {
-				return titleA.localeCompare(titleB);
-			} else {
-				return [...todos];
-			}
-		});
-		setNewTodos(sortedTodos); // setTodos(sortedTodos); // Обновление состояния с отсортированным списком
-	}, [sortAsc, isLoading]); // Дополнительная зависимость от todos
+		const varTodos = Object.entries(todos).map(([id, { title, completed }]) => ({
+			id,
+			title,
+			completed,
+		}));
+
+		if (sortAsc) {
+			setNewTodos(varTodos.sort((a, b) => a.title.localeCompare(b.title)));
+		} else {
+			setNewTodos(varTodos);
+		}
+	}, [sortAsc, todos]);
 
 	const handleChange = (e) => {
 		setUserInput(e.currentTarget.value);
@@ -94,7 +92,7 @@ export const App = () => {
 		if (userFindInput) {
 			setUserFindInput(userFindInput);
 			setUserFind(!userFind);
-		} else refreshTodos();
+		} else setRefreshTodos(!refreshTodos);
 	};
 
 	const handleFindKeyPress = (e) => {
@@ -106,7 +104,7 @@ export const App = () => {
 	return (
 		<div className={styles.app}>
 			<header className={styles.header}>
-				<h1>Список дел с JSON Server</h1>
+				<h1>Список дел на Firebase</h1>
 			</header>
 			<form onSubmit={handleFindSubmit}>
 				<input

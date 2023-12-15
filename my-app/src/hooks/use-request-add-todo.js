@@ -1,20 +1,13 @@
-export const useRequestAddTodo = (refreshTodos, userInput) => {
+import { ref, push } from 'firebase/database';
+import { db } from '../firebase';
+
+export const useRequestAddTodo = (userInput) => {
 	const requestAddTodo = () => {
-		console.log(userInput);
-		fetch('http://localhost:3005/todos', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json;charset=utf-8' },
-			body: JSON.stringify({
-				userId: 1,
-				title: userInput,
-				completed: false,
-			}),
-		})
-			.then((rawResponse) => rawResponse.json())
-			.then((response) => {
-				console.log('Пылесос добавлен, ответ сервера:', response);
-				refreshTodos();
-			});
+		const todoDbRef = ref(db, 'todos');
+		push(todoDbRef, {
+			title: userInput,
+			completed: false,
+		});
 	};
 
 	return requestAddTodo;

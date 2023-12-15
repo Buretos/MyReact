@@ -1,13 +1,10 @@
-export const useRequestDeleteTodo = (refreshTodos, idTodo) => {
+import { ref, remove } from 'firebase/database';
+import { db } from '../firebase';
+
+export const useRequestDeleteTodo = (idTodo) => {
 	const requestDeleteTodo = () => {
-		fetch(`http://localhost:3005/todos/${idTodo}`, {
-			method: 'DELETE',
-		})
-			.then((rawResponse) => rawResponse.json())
-			.then((response) => {
-				console.log('Фен удалён, ответ сервера:', response);
-				refreshTodos();
-			});
+		const dellDbRef = ref(db, `todos/${idTodo}`);
+		remove(dellDbRef);
 	};
 
 	return requestDeleteTodo;
