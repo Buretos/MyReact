@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route, Link } from 'react-router-dom';
+import styles from './App.module.css';
+
+const MainPage = () => <div>Контент главной страницы</div>;
+const Catalog = () => <div>Контент каталога</div>;
+const Contacts = () => <div>Контент контактов</div>;
 
 export const App = () => {
 	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
-			</header>
+		<div className={styles.app}>
+			<div>
+				<h3>Меню</h3>
+				<ul>
+					<li>
+						<Link to="/">Главная</Link>
+					</li>
+					<li>
+						<Link to="/catalog">Каталог</Link>
+					</li>
+					<li>
+						<Link to="/contacts">Контакты</Link>
+					</li>
+				</ul>
+			</div>
+			<Routes>
+				<Route path="/" element={<MainPage />} />
+				<Route path="/catalog" element={<Catalog />} />
+				<Route path="/contacts" element={<Contacts />} />
+			</Routes>
 		</div>
 	);
 };
