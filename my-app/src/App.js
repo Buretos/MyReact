@@ -1,4 +1,4 @@
-import { Routes, Route, Link, Outlet, useParams } from 'react-router-dom';
+import { Routes, Route, NavLink, Outlet, useParams } from 'react-router-dom';
 import styles from './App.module.css';
 
 const fetchProductList = () => [
@@ -42,7 +42,7 @@ const Catalog = () => (
 		<ul>
 			{fetchProductList().map(({ id, name }) => (
 				<li key={id}>
-					<Link to={`product/${id}`}>{name}</Link>
+					<NavLink to={`product/${id}`}>{name}</NavLink>
 				</li>
 			))}
 		</ul>
@@ -50,8 +50,22 @@ const Catalog = () => (
 	</div>
 );
 const Contacts = () => <div>Контент контактов</div>;
-
 const NotFound = () => <div>Такая страница не существует</div>;
+
+const ExtendedLink = ({ to, children }) => (
+	<NavLink to={to}>
+		{({ isActive }) =>
+			isActive ? (
+				<>
+					<span>{children}</span>
+					<span>*</span>
+				</>
+			) : (
+				children
+			)
+		}
+	</NavLink>
+);
 
 export const App = () => {
 	return (
@@ -60,13 +74,13 @@ export const App = () => {
 				<h3>Меню</h3>
 				<ul>
 					<li>
-						<Link to="/">Главная</Link>
+						<ExtendedLink to="/">Главная</ExtendedLink>
 					</li>
 					<li>
-						<Link to="/catalog">Каталог</Link>
+						<ExtendedLink to="/catalog">Каталог</ExtendedLink>
 					</li>
 					<li>
-						<Link to="/contacts">Контакты</Link>
+						<ExtendedLink to="/contacts">Контакты</ExtendedLink>
 					</li>
 				</ul>
 			</div>
