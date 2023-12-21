@@ -1,4 +1,4 @@
-import { Routes, Route, Link, Outlet } from 'react-router-dom';
+import { Routes, Route, Link, Outlet, useParams } from 'react-router-dom';
 import styles from './App.module.css';
 
 const fetchProductList = () => [
@@ -7,7 +7,25 @@ const fetchProductList = () => [
 	{ id: 3, name: 'Планшет' },
 ];
 
-const Product = () => <>Контент странички товара</>;
+const fetchProduct = (id) =>
+	({
+		1: { id: 1, name: 'Телевизор', price: 29900, amount: 15 },
+		2: { id: 2, name: 'Сматрфон', price: 13900, amount: 40 },
+		3: { id: 3, name: 'Планшет', price: 18400, amount: 23 },
+	})[id];
+
+const Product = () => {
+	const params = useParams();
+
+	const { name, price, amount } = fetchProduct(params.id);
+	return (
+		<div>
+			<h3>Товар - {name}</h3>
+			<div> Цена: {price}</div>
+			<div>Количество на складе: {amount}</div>
+		</div>
+	);
+};
 
 const MainPage = () => <div>Контент главной страницы</div>;
 const Catalog = () => (
@@ -16,7 +34,7 @@ const Catalog = () => (
 		<ul>
 			{fetchProductList().map(({ id, name }) => (
 				<li key={id}>
-					<Link to="product">{name}</Link>
+					<Link to={`product/${id}`}>{name}</Link>
 				</li>
 			))}
 		</ul>
@@ -45,7 +63,7 @@ export const App = () => {
 			<Routes>
 				<Route path="/" element={<MainPage />} />
 				<Route path="/catalog" element={<Catalog />}>
-					<Route path="product" element={<Product />} />
+					<Route path="product/:id" element={<Product />} />
 				</Route>
 				<Route path="/contacts" element={<Contacts />} />
 			</Routes>
