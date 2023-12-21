@@ -14,10 +14,18 @@ const fetchProduct = (id) =>
 		3: { id: 3, name: 'Планшет', price: 18400, amount: 23 },
 	})[id];
 
+const ProductNotFound = () => <div>Такой товар не существует</div>;
+
 const Product = () => {
 	const params = useParams();
 
-	const { name, price, amount } = fetchProduct(params.id);
+	const product = fetchProduct(params.id);
+	if (!product) {
+		return <ProductNotFound />;
+	}
+
+	const { name, price, amount } = product;
+
 	return (
 		<div>
 			<h3>Товар - {name}</h3>
@@ -43,6 +51,8 @@ const Catalog = () => (
 );
 const Contacts = () => <div>Контент контактов</div>;
 
+const NotFound = () => <div>Такая страница не существует</div>;
+
 export const App = () => {
 	return (
 		<div className={styles.app}>
@@ -66,6 +76,7 @@ export const App = () => {
 					<Route path="product/:id" element={<Product />} />
 				</Route>
 				<Route path="/contacts" element={<Contacts />} />
+				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</div>
 	);
