@@ -1,11 +1,12 @@
 import {
-	Routes,
-	Route,
+	// Routes,
+	// Route,
 	NavLink,
 	Outlet,
 	useParams,
 	useNavigate,
 	Navigate,
+	useRoutes,
 } from 'react-router-dom';
 import styles from './App.module.css';
 import { useEffect, useState } from 'react';
@@ -117,6 +118,23 @@ const ExtendedLink = ({ to, children }) => (
 );
 
 export const App = () => {
+	const routes = useRoutes([
+		{ path: '/', element: <MainPage /> },
+		{
+			path: '/catalog',
+			element: <Catalog />,
+			children: [
+				{ path: 'product/:id', element: <Product /> },
+				{ path: 'service/:id', element: <Product /> },
+			],
+		},
+		{ path: '/contacts', element: <Contacts /> },
+		{ path: '/product-load-error', element: <ProductLoadError /> },
+		{ path: '/product-not-exist', element: <ProductNotFound /> },
+		{ path: '/404"', element: <NotFound /> },
+		{ path: '*', element: <Navigate to="/404" /> },
+	]);
+
 	return (
 		<div className={styles.app}>
 			<div>
@@ -133,7 +151,7 @@ export const App = () => {
 					</li>
 				</ul>
 			</div>
-			<Routes>
+			{/* <Routes>
 				<Route path="/" element={<MainPage />} />
 				<Route path="/catalog" element={<Catalog />}>
 					<Route path="product/:id" element={<Product />} />
@@ -144,7 +162,8 @@ export const App = () => {
 				<Route path="/product-not-exist" element={<ProductNotFound />} />
 				<Route path="/404" element={<NotFound />} />
 				<Route path="*" element={<Navigate to="/404" />} />
-			</Routes>
+			</Routes> */}
+			{routes}
 		</div>
 	);
 };
