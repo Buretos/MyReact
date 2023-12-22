@@ -15,7 +15,7 @@ const database = {
 	},
 };
 
-const LOADING_TIMEOUT = 5000;
+const LOADING_TIMEOUT = 3000;
 
 const fetchProductList = () => database.productList;
 
@@ -50,14 +50,19 @@ const Product = () => {
 
 		fetchProduct(params.id).then((loadedProduct) => {
 			isProductLoaded = true;
+
 			if (!isLoadingTimeout) {
+				if (!loadedProduct) {
+					navigate('/product-not-exist');
+					return;
+				}
 				setProduct(loadedProduct);
 			}
 		});
 	}, [params.id, navigate]);
 
 	if (!product) {
-		return <ProductNotFound />;
+		return null;
 	}
 
 	const { name, price, amount } = product;
@@ -128,6 +133,7 @@ export const App = () => {
 				</Route>
 				<Route path="/contacts" element={<Contacts />} />
 				<Route path="/product-load-error" element={<ProductLoadError />} />
+				<Route path="/product-not-exist" element={<ProductNotFound />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</div>
