@@ -1,27 +1,49 @@
 import { Routes, Route, NavLink, Outlet, useParams, useMatch } from 'react-router-dom';
 import styles from './App.module.css';
+import { useEffect, useState } from 'react';
 
-const fetchProductList = () => [
-	{ id: 1, name: 'Телевизор' },
-	{ id: 2, name: 'Сматрфон' },
-	{ id: 3, name: 'Планшет' },
-];
-
-const fetchProduct = (id) =>
-	({
+const database = {
+	productList: [
+		{ id: 1, name: 'Телевизор' },
+		{ id: 2, name: 'Сматрфон' },
+		{ id: 3, name: 'Планшет' },
+	],
+	products: {
 		1: { id: 1, name: 'Телевизор', price: 29900, amount: 15 },
 		2: { id: 2, name: 'Сматрфон', price: 13900, amount: 40 },
 		3: { id: 3, name: 'Планшет', price: 18400, amount: 23 },
-	})[id];
+	},
+};
+
+const LOADING_TIMEOUT = 5000;
+
+const fetchProductList = () => database.productList;
+
+const fetchProduct = (id) =>
+	new Promise((resolve) => {
+		setTimeout(() => {
+			resolve(database.products[id]);
+		}, 2500);
+	});
 
 const ProductNotFound = () => <div>Такой товар не существует</div>;
 
 const Product = () => {
+	const [product, setProduct] = useState(null);
 	const params = useParams();
-	const urlMatchData = useMatch('/catalog/:type/:id');
-	console.log(urlMatchData.params.type);
 
-	const product = fetchProduct(params.id);
+	useEffect(() => {
+		let isLoadingTimeout = false;
+
+		setTimeout(() => {}, LOADING_TIMEOUT);
+
+		fetchProduct(params.id).then((loadedProduct) => {
+			if (!isLoadingTimeout) {
+				setProduct(loadedProduct);
+			}
+		});
+	}, []);
+
 	if (!product) {
 		return <ProductNotFound />;
 	}
