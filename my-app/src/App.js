@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink, Outlet, useParams, useMatch } from 'react-router-dom';
+import { Routes, Route, NavLink, Outlet, useParams, useNavigate } from 'react-router-dom';
 import styles from './App.module.css';
 import { useEffect, useState } from 'react';
 
@@ -27,22 +27,34 @@ const fetchProduct = (id) =>
 	});
 
 const ProductNotFound = () => <div>Такой товар не существует</div>;
+const ProductLoadError = () => (
+	<div>Ошибка загрузки товара. Попробуйте ещё раз позднее.</div>
+);
 
 const Product = () => {
 	const [product, setProduct] = useState(null);
 	const params = useParams();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		let isLoadingTimeout = false;
+		let isProductLoaded = false;
 
-		setTimeout(() => {}, LOADING_TIMEOUT);
+		setTimeout(() => {
+			isLoadingTimeout = true;
+
+			if (!isProductLoaded) {
+				navigate('/product-load-error');
+			}
+		}, LOADING_TIMEOUT);
 
 		fetchProduct(params.id).then((loadedProduct) => {
+			isProductLoaded = true;
 			if (!isLoadingTimeout) {
 				setProduct(loadedProduct);
 			}
 		});
-	}, []);
+	}, [params.id, navigate]);
 
 	if (!product) {
 		return <ProductNotFound />;
@@ -115,6 +127,7 @@ export const App = () => {
 					<Route path="service/:id" element={<Product />} />
 				</Route>
 				<Route path="/contacts" element={<Contacts />} />
+				<Route path="/product-load-error" element={<ProductLoadError />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</div>
